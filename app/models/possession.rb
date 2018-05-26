@@ -15,10 +15,14 @@ class Possession < ApplicationRecord
 
   def self.add_user(possessions)
     json = []
+
+    # events = possessions.map(&:attributes)
+    # events = events.map { |p| p.merge(:user => User.find_by(id: p[:user_id])) }
+
     possessions.each do |possession|
-      # user = User.find_by(id: possession.user_id)
+      user = User.find_by(id: possession.user_id)
       hash = {
-        # spread/splat operator?
+        # **possession,
         id: possession.id,
         created_at: possession.created_at,
         updated_at: possession.updated_at,

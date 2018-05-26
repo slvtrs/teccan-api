@@ -27,7 +27,6 @@ class PossessionsController < ApplicationController
       item_id: params[:bounty][:id], 
       latitude_1: lat, 
       longitude_1: lon,
-      message: params[:message]
     )
     # bounty.item.update_coords([nil,nil])
 
@@ -36,6 +35,7 @@ class PossessionsController < ApplicationController
 
     offering.latitude_2 = lat
     offering.longitude_2 = lon
+    offering.message = params[:message]
     offering.active = false
 
     if bounty && offering
