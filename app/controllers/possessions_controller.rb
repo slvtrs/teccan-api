@@ -2,6 +2,7 @@ class PossessionsController < ApplicationController
   
   def index
     user = current_user || User.find_by(id: params[:user_id])
+    puts 'index--------------'
     if user
       items = user.active_items
       render json: {
@@ -14,21 +15,36 @@ class PossessionsController < ApplicationController
   end
 
   def trade
-    coords = [possession_params.latitude, possession_params.longitude]
+    lat = params[:coords][:latitude]
+    lon = params[:coords][:longitude]
 
-    bounty = current_user.possessions.build(possession_params)
-    # bounty.item.update_coords(coords)
+    if lat.blank? || lon.blank?
+      render json: {error: true, message: 'missing location info'}
+      return
+    end
+
+    bounty = current_user.possessions.build(
+      item_id: params[:bounty][:id], 
+      latitude_1: lat, 
+      longitude_1: lon,
+      message: params[:message]
+    )
     # bounty.item.update_coords([nil,nil])
 
-    offering = current_user.possessions.find_by(id: params[:offering_id])
-    offering.item.update_coords(coords)
+    offering = current_user.active_possessions.find_by(item_id: params[:offering][:id])
+    offering.item.update_coords(lat, lon)
+
+    offering.latitude_2 = lat
+    offering.longitude_2 = lon
+    offering.active = false
 
     if bounty && offering
       if bounty.save
-        bounty.item.save
+        puts bounty.inspect
+        # bounty.item.save
         offering.item.save
 
-        if offering.destroy
+        if offering.save
           render json: {success: true, item: bounty.item}
         else
           render json: {error: true, message: 'could not save'}
@@ -62,7 +78,11 @@ class PossessionsController < ApplicationController
 
   private
   def possession_params
-    params.require(:possession).permit(:item_id, :message, :latitude, :longitude)
+    params.require(:possession).permit(:item_id, :message)
+  end
+
+  def item_params
+    params.require(:item).permit(:id, :message)
   end
 
 end

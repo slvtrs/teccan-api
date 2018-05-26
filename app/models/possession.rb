@@ -7,4 +7,9 @@ class Possession < ApplicationRecord
   
   scope :active,   -> { where(active: true)  }
   scope :inactive, -> { where(active: false) }
+
+  def update_coords (lat, lon)
+    self.latitude = lat
+    self.longitude = lon
+  end
 end

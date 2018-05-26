@@ -7,16 +7,17 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }, 
   defaults: { format: :json }
+
   devise_scope :user do
     patch 'users/update_device', :to => 'users/sessions#update_device'
     delete 'users/log_out', :to => 'users/sessions#log_out'
   end
 
   get 'harvest', to: 'items#nearby'
-  # get 'inventory', to: 'items#inventory'
+  get 'item/:id', to: 'items#show'
 
   # resources :possessions
   get 'inventory', to: 'possessions#index'
-  post 'trade', to: 'possessions#trade'
+  post 'transmute', to: 'possessions#trade'
 
 end

@@ -1,6 +1,17 @@
 class ItemsController < ApplicationController
   include ItemHelper
 
+  def show
+    item = Item.find_by(id: params[:id])
+    timeline = Possession.where(item_id: item.id, active: false).order(updated_at: :desc)
+    puts timeline.inspect
+    render json: {
+      success: true,
+      item: item,
+      timeline: timeline,
+    }
+  end
+
   def nearby
     items = Item.get_all_unpossessed
     render json: {

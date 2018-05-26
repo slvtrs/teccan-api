@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180525192802) do
+ActiveRecord::Schema.define(version: 20180526171015) do
 
   create_table "devices", force: :cascade do |t|
     t.string "token"
     t.integer "user_id"
     t.string "device_type"
     t.string "device_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
@@ -34,9 +36,13 @@ ActiveRecord::Schema.define(version: 20180525192802) do
     t.boolean "active", default: true
     t.integer "user_id"
     t.integer "item_id"
-    t.string "longitude"
-    t.string "latitude"
     t.string "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "longitude_1"
+    t.string "longitude_2"
+    t.string "latitude_1"
+    t.string "latitude_2"
     t.index ["item_id"], name: "index_possessions_on_item_id"
     t.index ["user_id"], name: "index_possessions_on_user_id"
   end

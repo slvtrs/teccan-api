@@ -36,14 +36,18 @@ class Users::SessionsController < Devise::SessionsController
       if user
         device = user.devices.find_by(token: token)
         device_id = params[:device_id]
-        if device_id
-          device.update_attributes!(device_id: device_id)
-          message += "device_id udpated: #{device_id}. "
-        end
-        device_type = params[:device_type]
-        if device_type
-          device.update_attributes!(device_type: device_type)
-          message += "device_type udpated: #{device_type}. "
+        if device
+          if device_id
+            device.update_attributes!(device_id: device_id)
+            message += "device_id udpated: #{device_id}. "
+          end
+          device_type = params[:device_type]
+          if device_type
+            device.update_attributes!(device_type: device_type)
+            message += "device_type udpated: #{device_type}. "
+          end
+        else
+          message = 'no device found'
         end
       end
     end
