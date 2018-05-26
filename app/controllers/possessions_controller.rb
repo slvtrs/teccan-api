@@ -17,7 +17,7 @@ class PossessionsController < ApplicationController
   def trade
     lat = params[:coords][:latitude]
     lon = params[:coords][:longitude]
-
+    
     if lat.blank? || lon.blank?
       render json: {error: true, message: 'missing location info'}
       return

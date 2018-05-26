@@ -3,7 +3,10 @@ class ItemsController < ApplicationController
 
   def show
     item = Item.find_by(id: params[:id])
-    timeline = Possession.where(item_id: item.id, active: false).order(updated_at: :desc)
+    possessions = Possession.where(item_id: item.id, active: false).order(updated_at: :desc)
+    timeline = Possession.add_user(possessions)
+
+    puts item.inspect
     puts timeline.inspect
     render json: {
       success: true,
