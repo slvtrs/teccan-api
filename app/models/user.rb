@@ -5,10 +5,25 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
   
   has_many :devices, dependent: :destroy
-  # has_many :possessions, dependent: :destroy
-  # has_many :items, through: :possessions
-  # has_many :items, -> { where(active: true) }, class_name: "Item", 
-  #   through: :possessions, source: :item
+  has_many :possessions, dependent: :destroy
+
+  has_many :active_possessions,   -> { active },   class_name: "Possession"
+  has_many :inactive_possessions, -> { inactive }, class_name: "Possession"
+
+  has_many :inactive_items, through: :inactive_possessions,
+                             class_name: "Item",
+                             source: :item
+  has_many :active_items,   through: :active_possessions,
+                             class_name: "Item",
+                             source: :item
+
+  def create_initial_inventory
+    items = Item.get_all_unpossessed
+    items.first(3).each do |item|
+      possession = self.possessions.build(item_id: item.id)
+      possession.save
+    end
+  end
 
   def init_device
     device = self.devices.build

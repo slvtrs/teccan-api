@@ -1,10 +1,18 @@
 class Item < ApplicationRecord
 
-  def self.get_all_unpossessed
-    # possessed_item_ids = Possession.where(active: true).pluck(:item_id)
-    # items = Item.where.not(id: possessed_item_ids)
-    Item.create_initial_items
+  def update_coords (lat, lon)
+    self.latitude = lat
+    self.longitude = lon
   end
+
+  def self.get_all_unpossessed
+    possessed_item_ids = Possession.where(active: true).pluck(:item_id)
+    items = Item.where.not(id: possessed_item_ids)
+  end
+
+  # def self.generate_random
+  #   Item.build(title: title)
+  # end
 
   def self.create_initial_items
     items = [
@@ -51,5 +59,14 @@ class Item < ApplicationRecord
         latitude: 41.5,
       },
     ]
+    items.each do |item|
+      newItem = Item.create(
+        title: item[:title], 
+        description: item[:description], 
+        longitude: item[:longitude],
+        latitude: item[:latitude],
+      )
+      newItem.save
+    end
   end
 end

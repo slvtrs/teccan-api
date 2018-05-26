@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180525011811) do
+ActiveRecord::Schema.define(version: 20180525192802) do
 
   create_table "devices", force: :cascade do |t|
     t.string "token"
@@ -28,6 +28,17 @@ ActiveRecord::Schema.define(version: 20180525011811) do
     t.datetime "updated_at", null: false
     t.string "longitude"
     t.string "latitude"
+  end
+
+  create_table "possessions", force: :cascade do |t|
+    t.boolean "active", default: true
+    t.integer "user_id"
+    t.integer "item_id"
+    t.string "longitude"
+    t.string "latitude"
+    t.string "message"
+    t.index ["item_id"], name: "index_possessions_on_item_id"
+    t.index ["user_id"], name: "index_possessions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

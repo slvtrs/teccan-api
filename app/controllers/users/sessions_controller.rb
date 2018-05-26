@@ -15,6 +15,7 @@ class Users::SessionsController < Devise::SessionsController
       if user.valid_password?(sign_in_params[:password])
         sign_in :user, user
         auth_token = user.init_device
+        user.create_initial_inventory if user.possessions.empty?
         render json: {success: true, token: auth_token}
         return
       else

@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-  # protect_from_forgery with: :null_session
   before_action :authenticate_user_from_token!
   respond_to :json
 
@@ -21,7 +20,7 @@ class ApplicationController < ActionController::API
     end
 
     user_id = auth_token.split(':').first
-    user = User.where(id: user_id).first
+    user = User.find_by(id: user_id)
     token = auth_token.split(':').last
 
     if user

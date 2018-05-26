@@ -1,20 +1,11 @@
 class ItemsController < ApplicationController
-  include  ItemHelper
+  include ItemHelper
 
-  def harvest
+  def nearby
     items = Item.get_all_unpossessed
     render json: {
       success: true,
-      harvest: items,
-    }
-  end
-
-  def inventory
-    # items = current_user.items
-    items = Item.get_all_unpossessed
-    render json: {
-      success: true,
-      inventory: items,
+      items: items,
     }
   end
 

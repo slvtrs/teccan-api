@@ -12,7 +12,11 @@ Rails.application.routes.draw do
     delete 'users/log_out', :to => 'users/sessions#log_out'
   end
 
-  get 'harvest', to: 'items#harvest'
-  get 'inventory', to: 'items#inventory'
+  get 'harvest', to: 'items#nearby'
+  # get 'inventory', to: 'items#inventory'
+
+  # resources :possessions
+  get 'inventory', to: 'possessions#index'
+  post 'trade', to: 'possessions#trade'
 
 end
