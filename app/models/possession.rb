@@ -13,14 +13,19 @@ class Possession < ApplicationRecord
     self.longitude = lon
   end
 
-  def self.add_user(possessions)
+  def self.mutate(possessions, current_user)
     json = []
 
     # events = possessions.map(&:attributes)
     # events = events.map { |p| p.merge(:user => User.find_by(id: p[:user_id])) }
 
     possessions.each do |possession|
-      user = User.find_by(id: possession.user_id)
+      # user = User.find_by(id: possession.user_id)
+      loc_1 = Geocoder.search("#{possession.latitude_1},#{possession.longitude_1}").first
+      loc_2 = Geocoder.search("#{possession.latitude_2},#{possession.longitude_2}").first
+      city_1 = loc_1 ? loc_1.city : ''
+      city_2 = loc_2 ? loc_2.city : ''
+
       hash = {
         # **possession,
         id: possession.id,
@@ -31,7 +36,11 @@ class Possession < ApplicationRecord
         latitude_2: possession.latitude_2,
         longitude_1: possession.longitude_1,
         longitude_2: possession.longitude_2,
+        active: possession.active,
         user: possession.user,
+        city_1: city_1,
+        city_2: city_2,
+        is_mine: current_user.id == possession.user_id,
       }
       json << hash
     end

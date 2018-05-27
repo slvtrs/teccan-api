@@ -14,10 +14,11 @@ Rails.application.routes.draw do
   end
 
   get 'harvest', to: 'items#nearby'
-  get 'item/:id', to: 'items#show'
+  get 'items/:id', to: 'items#show'
 
   # resources :possessions
   get 'inventory', to: 'possessions#index'
   post 'transmute', to: 'possessions#trade'
+  patch 'update/:id', to: 'possessions#update'
 
 end

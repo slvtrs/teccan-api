@@ -49,3 +49,5 @@ group :production do
 end
 # Added at 2018-05-24 19:30:20 -0400 by slvtrs:
 gem "devise", "~> 4.4"
+
+gem 'geocoder'

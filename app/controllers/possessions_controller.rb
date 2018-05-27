@@ -2,7 +2,6 @@ class PossessionsController < ApplicationController
   
   def index
     user = current_user || User.find_by(id: params[:user_id])
-    puts 'index--------------'
     if user
       items = user.active_items
       render json: {
@@ -11,6 +10,17 @@ class PossessionsController < ApplicationController
       }
     else
       render json: {error: true, message: 'missing user'}
+    end
+  end
+
+  def update
+    possession = Possession.find_by(id: params[:id])
+    possession.message = params[:message]
+    if possession.save
+      possession = Possession.mutate([possession], current_user)[0]
+      render json: { success: true, possession: possession }
+    else
+      render json: { error: true, message: 'failed to save' }
     end
   end
 
@@ -53,36 +63,9 @@ class PossessionsController < ApplicationController
     end
   end
 
-  # def create
-  #   possession = current_user.possessions.build(possession_params)
-  #   possession.active = true
-  #   if possession.save
-  #     render json: {success: true, possession: possession}
-  #   else
-  #     render json: {error: true, message: 'could not save'}
-  #   end
-  # end
-
-  # def destroy
-  #   possession = Possession.find_by(id: params[:id])
-  #   if possession
-  #     if possession.destroy
-  #       render json: {status: 200}
-  #     else
-  #       render json: {status: 500}
-  #     end
-  #   else
-  #     render json: {status: 404}
-  #   end
-  # end
-
   private
   def possession_params
     params.require(:possession).permit(:item_id, :message)
-  end
-
-  def item_params
-    params.require(:item).permit(:id, :message)
   end
 
 end
