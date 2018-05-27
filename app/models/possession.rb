@@ -20,11 +20,8 @@ class Possession < ApplicationRecord
     # events = events.map { |p| p.merge(:user => User.find_by(id: p[:user_id])) }
 
     possessions.each do |possession|
-      # user = User.find_by(id: possession.user_id)
-      loc_1 = Geocoder.search("#{possession.latitude_1},#{possession.longitude_1}").first
-      loc_2 = Geocoder.search("#{possession.latitude_2},#{possession.longitude_2}").first
-      city_1 = loc_1 ? loc_1.city : ''
-      city_2 = loc_2 ? loc_2.city : ''
+      loc_string_1 = Possession.location_string(possession.latitude_1, possession.longitude_1)
+      loc_string_2 = Possession.location_string(possession.latitude_2, possession.longitude_2)
 
       hash = {
         # **possession,
@@ -38,12 +35,21 @@ class Possession < ApplicationRecord
         longitude_2: possession.longitude_2,
         active: possession.active,
         user: possession.user,
-        city_1: city_1,
-        city_2: city_2,
+        location_1: loc_string_1,
+        location_2: loc_string_2,
         is_mine: current_user.id == possession.user_id,
       }
       json << hash
     end
     json
+  end
+
+  def self.location_string(lat, lon)
+    string = ""
+    loc = Geocoder.search("#{lat},#{lon}").first
+    if loc
+      string = "#{loc.city}, #{loc.state_code}"
+    end
+    string
   end
 end
