@@ -16,6 +16,17 @@ class ItemsController < ApplicationController
     }
   end
 
+  def create
+    item = current_user.items.build(item_params)
+    if item.save
+      possession = current_user.possessions.build(item_id: item.id)
+      possession.save
+      render json: {success: true, item: item}
+    else
+      render json: {error: true, message: 'something went wrong'}
+    end
+  end
+
   def nearby
     items = Item.get_all_unpossessed
     render json: {
@@ -39,7 +50,7 @@ class ItemsController < ApplicationController
   end
 
   private
-  def harvest_params
-    # params.require(:user).permit(:status, :in_onward, :paywall, :name, :company, :email, :tier, :paused)
+  def item_params
+    params.require(:item).permit(:title, :description, :image)
   end
 end

@@ -3,7 +3,7 @@ class PossessionsController < ApplicationController
   def index
     user = current_user || User.find_by(id: params[:user_id])
     if user
-      items = user.active_items
+      items = user.items
       render json: {
         success: true,
         items: items,
@@ -25,6 +25,39 @@ class PossessionsController < ApplicationController
   end
 
   def trade
+    shrine = Shrine.find_by(id: params[:shrine][:id])
+    harvest = shrine.active_offerings.find_by(item_id: params[:bounty][:id])
+    harvest.active = false
+    bounty = current_user.possessions.build(item_id: params[:bounty][:id])    
+
+    possession = current_user.possessions.find_by(item_id: params[:offering][:id])
+    possession.message = params[:message]
+    possession.active = false
+
+
+    if bounty && possession && shrine && harvest
+      if harvest.save
+        if bounty.save
+          if possession.save
+            offering = shrine.offerings.build(item_id: possession.item.id, possession_id: possession.id)
+            if offering.save
+              render json: {success: true, item: bounty.item}
+            else
+              render json: {error: true, message: 'offering could not save'}
+            end
+          else
+            render json: {error: true, message: 'possession could not save'}
+          end
+        else
+          render json: {error: true, message: 'bounty could not save'}
+        end
+      else
+        render json: {error: true, message: 'harvest could not save'}
+      end
+    end
+  end
+
+  def trade_with_location
     lat = params[:coords][:latitude]
     lon = params[:coords][:longitude]
     
@@ -40,7 +73,7 @@ class PossessionsController < ApplicationController
     )
     # bounty.item.update_coords([nil,nil])
 
-    offering = current_user.active_possessions.find_by(item_id: params[:offering][:id])
+    offering = current_user.possessions.find_by(item_id: params[:offering][:id])
     offering.item.update_coords(lat, lon)
 
     offering.latitude_2 = lat

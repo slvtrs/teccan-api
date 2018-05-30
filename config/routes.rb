@@ -20,5 +20,10 @@ Rails.application.routes.draw do
   get 'inventory', to: 'possessions#index'
   post 'transmute', to: 'possessions#trade'
   patch 'update/:id', to: 'possessions#update'
+  
+  post 'item', to: 'items#create'
 
+  get 'shrines', to: 'shrines#index'
+  get 'shrines/:id', to: 'shrines#show'
+  post 'shrine', to: 'shrines#create'
 end

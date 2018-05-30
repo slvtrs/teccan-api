@@ -6,14 +6,15 @@ class User < ApplicationRecord
   
   has_many :devices, dependent: :destroy
   has_many :possessions, dependent: :destroy
+  has_many :shrines
 
-  has_many :active_possessions,   -> { active },   class_name: "Possession"
+  has_many :possessions,   -> { active },   class_name: "Possession"
   has_many :inactive_possessions, -> { inactive }, class_name: "Possession"
 
   has_many :inactive_items, through: :inactive_possessions,
                              class_name: "Item",
                              source: :item
-  has_many :active_items,   through: :active_possessions,
+  has_many :items,   through: :possessions,
                              class_name: "Item",
                              source: :item
 

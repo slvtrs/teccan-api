@@ -1,19 +1,16 @@
-class Possession < ApplicationRecord
-  # belongs_to :user, inverse_of: :possessions
-  # belongs_to :item, inverse_of: :possessions
+class Shrine < ApplicationRecord
   belongs_to :user
-  belongs_to :item
-  
-  validates_associated :item
-  # validates :latitude, :longitude, presence: true
-  
-  scope :active,   -> { where(active: true)  }
-  scope :inactive, -> { where(active: false) }
+  has_many :offerings
 
-  def update_coords (lat, lon)
-    self.latitude = lat
-    self.longitude = lon
-  end
+  has_many :active_offerings,   -> { active },   class_name: "Offering"
+  has_many :inactive_offerings, -> { inactive }, class_name: "Offering"
+
+  has_many :inactive_items, through: :inactive_offerings,
+                             class_name: "Item",
+                             source: :item
+  has_many :active_items,   through: :active_offerings,
+                             class_name: "Item",
+                             source: :item
 
   def self.mutate(possessions, current_user)
     json = []
@@ -46,9 +43,9 @@ class Possession < ApplicationRecord
     json
   end
 
-  def self.location_string(lat, lon)
+  def get_location_string
     string = ""
-    loc = Geocoder.search("#{lat},#{lon}").first
+    loc = Geocoder.search("#{self.latitude},#{self.longitude}").first
     if loc
       string = "#{loc.city}, #{loc.state_code}"
     end

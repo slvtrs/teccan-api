@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180526171015) do
+ActiveRecord::Schema.define(version: 20180529220152) do
 
   create_table "devices", force: :cascade do |t|
     t.string "token"
@@ -32,6 +32,19 @@ ActiveRecord::Schema.define(version: 20180526171015) do
     t.string "latitude"
   end
 
+  create_table "offerings", force: :cascade do |t|
+    t.boolean "active", default: true
+    t.integer "shrine_id"
+    t.integer "item_id"
+    t.integer "possession_id"
+    t.string "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_offerings_on_item_id"
+    t.index ["possession_id"], name: "index_offerings_on_possession_id"
+    t.index ["shrine_id"], name: "index_offerings_on_shrine_id"
+  end
+
   create_table "possessions", force: :cascade do |t|
     t.boolean "active", default: true
     t.integer "user_id"
@@ -43,8 +56,22 @@ ActiveRecord::Schema.define(version: 20180526171015) do
     t.string "longitude_2"
     t.string "latitude_1"
     t.string "latitude_2"
+    t.integer "shrine_id"
     t.index ["item_id"], name: "index_possessions_on_item_id"
+    t.index ["shrine_id"], name: "index_possessions_on_shrine_id"
     t.index ["user_id"], name: "index_possessions_on_user_id"
+  end
+
+  create_table "shrines", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.string "image"
+    t.string "latitude"
+    t.string "longitude"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_shrines_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
