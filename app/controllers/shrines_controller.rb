@@ -1,31 +1,20 @@
-class ShrinesController < ApplicationController
-  include ItemHelper
-  
+class ShrinesController < ApplicationController  
   def index
-    shrines = Shrine.all
-
     loc = [params[:latitude].to_f, params[:longitude].to_f]
-    nearest_shrine = nil
-    distance_to_nearest_shrine = 6371000
-    shrines.each do |shrine|
-      shrine_loc = [shrine.latitude.to_f, shrine.longitude.to_f]
-      dis = distance(loc, shrine_loc)
-      if dis < distance_to_nearest_shrine
-        nearest_shrine = shrine
-        distance_to_nearest_shrine = dis
-      end
-    end
+    shrines = Shrine.mutate(Shrine.all, current_user, loc)
+    nearest_shrine = Shrine.nearest(shrines)
 
     render json: {
       success: true,
       shrines: shrines,
-      distanceToNearestShrine: distance_to_nearest_shrine,
       nearestShrine: nearest_shrine,
     }
   end
 
   def show
     shrine = Shrine.find_by(id: params[:id])
+    # loc = [params[:latitude].to_f, params[:longitude].to_f]
+    # shrine = Shrine.mutate([shrine], current_user, loc)[0]
     if shrine
       render json: {
         success: true,

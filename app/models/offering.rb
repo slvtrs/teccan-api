@@ -6,6 +6,16 @@ class Offering < ApplicationRecord
   scope :active,   -> { where(active: true)  }
   scope :inactive, -> { where(active: false) }
 
+  def location
+    if self.shrine
+      [self.shrine.latitude, slef.shrine.longitude]
+    end
+  end
+
+  def message
+    self.possession.message
+  end
+
   def self.mutate(offerings, current_user)
     json = []
 

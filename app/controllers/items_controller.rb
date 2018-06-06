@@ -1,5 +1,4 @@
 class ItemsController < ApplicationController
-  include ItemHelper
 
   def show
     item = Item.find_by(id: params[:id])
@@ -40,7 +39,7 @@ class ItemsController < ApplicationController
     if params[:latitude] && params[:longitude]
       loc = [params[:latitude].to_f, params[:longitude].to_f]
       salem = [42.521493, -70.898882]
-      dis = distance(loc, salem)
+      dis = Distance.meters(loc, salem)
       dis = (dis / 1609.34).round(2)
     end
     render json: {

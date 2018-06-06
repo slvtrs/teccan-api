@@ -12,35 +12,36 @@ class Shrine < ApplicationRecord
                              class_name: "Item",
                              source: :item
 
-  def self.mutate(possessions, current_user)
+  def self.mutate(shrines, current_user, location)
     json = []
-
-    # events = possessions.map(&:attributes)
-    # events = events.map { |p| p.merge(:user => User.find_by(id: p[:user_id])) }
-
-    possessions.each do |possession|
-      loc_string_1 = Possession.location_string(possession.latitude_1, possession.longitude_1)
-      loc_string_2 = Possession.location_string(possession.latitude_2, possession.longitude_2)
-
-      hash = {
-        # **possession,
-        id: possession.id,
-        created_at: possession.created_at,
-        updated_at: possession.updated_at,
-        message: possession.message,
-        latitude_1: possession.latitude_1,
-        latitude_2: possession.latitude_2,
-        longitude_1: possession.longitude_1,
-        longitude_2: possession.longitude_2,
-        active: possession.active,
-        user: possession.user,
-        location_1: loc_string_1,
-        location_2: loc_string_2,
-        is_mine: current_user.id == possession.user_id,
+    shrines.each do |shrine|
+      shrine_loc = [shrine.latitude.to_f, shrine.longitude.to_f]
+      dis = Distance.meters(location, shrine_loc)
+      json << {
+        id: shrine.id,
+        created_at: shrine.created_at,
+        updated_at: shrine.updated_at,
+        title: shrine.title,
+        description: shrine.description,
+        latitude: shrine.latitude,
+        longitude: shrine.longitude,
+        user: shrine.user,
+        is_mine: current_user.id == shrine.user_id,
+        distance: dis,
       }
-      json << hash
     end
     json
+  end
+
+  def self.nearest(shrines)
+    nearest_shrine = nil
+    distance_to_nearest_shrine = 6371000
+    shrines.each do |shrine|
+      if shrine[:distance] < distance_to_nearest_shrine
+        nearest_shrine = shrine
+      end
+    end
+    nearest_shrine
   end
 
   def get_location_string

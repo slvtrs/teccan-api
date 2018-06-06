@@ -15,6 +15,12 @@ class Possession < ApplicationRecord
     self.longitude = lon
   end
 
+  def location
+    if self.shrine
+      [self.shrine.latitude, slef.shrine.longitude]
+    end
+  end
+
   def self.mutate(possessions, current_user)
     json = []
 
