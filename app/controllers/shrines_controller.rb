@@ -1,4 +1,5 @@
-class ShrinesController < ApplicationController  
+class ShrinesController < ApplicationController
+
   def index
     loc = [params[:latitude].to_f, params[:longitude].to_f]
     shrines = Shrine.mutate(Shrine.all, current_user, loc)

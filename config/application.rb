@@ -1,5 +1,6 @@
 require_relative 'boot'
 
+
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
@@ -31,3 +32,5 @@ module TeccanApi
     config.api_only = true
   end
 end
+
+require 'carrierwave/orm/activerecord'

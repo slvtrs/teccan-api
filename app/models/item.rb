@@ -1,4 +1,5 @@
 class Item < ApplicationRecord
+  mount_uploader :image, CoverPhotoUploader
 
   def update_coords (lat, lon)
     self.latitude = lat

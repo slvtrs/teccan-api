@@ -1,4 +1,6 @@
 class Shrine < ApplicationRecord
+  mount_uploader :image, CoverPhotoUploader
+  
   belongs_to :user
   has_many :offerings
 

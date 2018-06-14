@@ -51,3 +51,5 @@ end
 gem "devise", "~> 4.4"
 
 gem 'geocoder'
+
+gem 'carrierwave', '~> 1.0'
