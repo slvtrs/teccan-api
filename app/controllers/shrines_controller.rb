@@ -28,7 +28,8 @@ class ShrinesController < ApplicationController
   end
 
   def create
-    item_id = params[:offering][:id]
+    item = JSON.parse(params[:offering])
+    item_id = item['id']
     possession = current_user.possessions.find_by(item_id: item_id)
     possession.active = false
 
@@ -57,7 +58,7 @@ class ShrinesController < ApplicationController
 
   private
   def shrine_params
-    params.require(:shrine).permit(:latitude, :longitude, :title, :image, :description, :offering)
+    params.require(:shrine).permit(:latitude, :longitude, :title, :image, :description)
   end
 
 end

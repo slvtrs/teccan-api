@@ -29,6 +29,7 @@ class Shrine < ApplicationRecord
         longitude: shrine.longitude,
         user: shrine.user,
         is_mine: current_user.id == shrine.user_id,
+        image: shrine.image,
         distance: dis,
       }
     end
